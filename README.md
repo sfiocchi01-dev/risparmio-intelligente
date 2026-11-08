@@ -1,8 +1,52 @@
-# Risparmio intelligente — Web app
+# Risparmio intelligente
 
-Web app installabile (PWA) per dare uno scopo ai risparmi. Registro personale in euro, senza collegamenti bancari, account o server applicativo.
+**Dai uno scopo a ogni euro che metti da parte.**
 
-Repository predisposto per GitHub; pubblicazione del sito manuale tramite GitHub Actions. Istruzioni in [docs/GITHUB.md](docs/GITHUB.md).
+Risparmio intelligente è una web app che ti aiuta a organizzare i tuoi risparmi per obiettivi: un’auto, le vacanze, la salute, un fondo per gli imprevisti o qualsiasi altro progetto personale.
+
+Invece di vedere un’unica somma indistinta, trovi un **salvadanaio trasparente per ogni categoria**, con il denaro già destinato a quell’obiettivo e quanto manca per raggiungerlo. Il riempimento visivo rende immediato capire a che punto sei.
+
+È un **registro virtuale**, non un conto bancario: sei tu a registrare i soldi messi da parte o utilizzati. L’app li organizza, ma non custodisce né trasferisce denaro reale.
+
+## Come funziona
+
+1. **Crea i tuoi salvadanai.** Scegli il nome, l’importo da raggiungere e l’eventuale saldo iniziale.
+2. **Registra un versamento.** L’app distribuisce la somma facendo recuperare prima gli obiettivi meno pieni, poi facendo crescere insieme le percentuali di riempimento.
+3. **Scegli una priorità, se serve.** Un salvadanaio prioritario riceve tutto fino al completamento; solo l’eccedenza passa agli altri.
+4. **Controlla e aggiorna i risparmi.** Apri un salvadanaio per registrare un prelievo, trasferire denaro a un altro obiettivo o modificarlo.
+5. **Ritrova ogni operazione.** La lista dei movimenti mostra cosa è successo, con data e ora.
+
+### Un esempio concreto
+
+Hai due obiettivi inizialmente vuoti:
+
+| Salvadanaio | Obiettivo | Quota di un versamento di 300 € | Riempimento |
+|---|---:|---:|---:|
+| Auto | 2.000 € | 200 € | 10% |
+| Vacanze | 1.000 € | 100 € | 10% |
+
+Le somme non vengono divise in parti uguali: vengono ripartite per far avanzare gli obiettivi alla **stessa percentuale**. Se una categoria è più indietro, i versamenti successivi la aiutano prima a recuperare.
+
+I salvadanai completi non ricevono altro denaro. L’eventuale eccedenza resta nel **saldo da assegnare**, che puoi distribuire in seguito oppure prelevare direttamente.
+
+## Cosa puoi fare
+
+- Creare e modificare obiettivi di risparmio, senza scadenze obbligatorie.
+- Registrare versamenti e lasciare all’app il calcolo della ripartizione.
+- Attivare una categoria prioritaria e disattivarla quando vuoi.
+- Registrare prelievi e trasferimenti tra salvadanai.
+- Gestire il saldo non ancora distribuito.
+- Eliminare una categoria scegliendo se redistribuire i risparmi o prelevarli tutti.
+- Consultare lo storico dei movimenti con data e ora.
+- Salvare automaticamente il registro sul dispositivo ed esportare o ripristinare un backup.
+- Usare l’app offline dopo il primo caricamento e completamento della cache.
+- Aggiungere un promemoria mensile al Calendario tramite un file esportabile, senza registrazioni automatiche.
+
+## Come si usa
+
+La web app si apre dal browser e, una volta ospitata in HTTPS, può essere aggiunta alla schermata Home dell’iPhone da Safari. Non richiede un account e non collega conti bancari. Il registro parte vuoto, pronto per i tuoi obiettivi.
+
+**Il codice è nel repository privato; il sito non è ancora pubblicato.** Per provarla sul Mac segui le istruzioni qui sotto. Per la futura pubblicazione consulta [docs/GITHUB.md](docs/GITHUB.md).
 
 ## Avvio sul Mac
 
@@ -16,22 +60,6 @@ npm start
 Apri **http://localhost:4173/** nel browser. Non aprire `index.html` con doppio clic: moduli, database e service worker richiedono un server.
 
 Il server di anteprima ascolta solo sul Mac. `localhost` sull'iPhone identifica l'iPhone, non il Mac. L'installazione reale su iPhone richiederà un indirizzo HTTPS, che predisporremo su GitHub Pages; non è ancora pubblicato.
-
-## Funzioni implementate
-
-- Registro inizialmente vuoto, senza dati dimostrativi mescolati ai propri risparmi.
-- Salvadanai trasparenti responsive, nome, saldo, obiettivo e percentuale.
-- Creazione e modifica categorie; saldo iniziale registrato.
-- Versamenti con ripartizione che allinea le percentuali più basse; una priorità persistente.
-- Prelievi, trasferimenti e saldo da assegnare.
-- Pulsante di prelievo libero sotto quello di distribuzione.
-- Eliminazione con scelta esplicita: redistribuzione senza priorità o prelievo totale; annullamento.
-- Movimenti con data/ora originali e separatore rispetto ai salvadanai.
-- Salvataggio automatico in IndexedDB, confermato soltanto quando la transazione è completata.
-- Esportazione/importazione backup JSON, con validazione, riepilogo e conferma di sostituzione.
-- Shell offline con service worker, manifest e icone per installazione.
-- Richiesta facoltativa di conservazione persistente al browser, non garantita.
-- Esportazione di un promemoria mensile per il Calendario (file ICS), non notifiche web automatiche.
 
 ## Dati e backup
 
@@ -82,10 +110,8 @@ Prima della pubblicazione: test Safari/iPhone (installazione, chiusura/riapertur
 - `tests/`: test del dominio, callback browser ed evidenze sintetiche.
 - `docs/ARCHITETTURA.md`, `docs/VERIFICHE.md`: decisioni e collaudi.
 
-## Limiti rispetto alla versione nativa prevista
+## Documentazione
 
-Niente iCloud, sincronizzazione cloud, login o notifiche push in background. Il promemoria Calendario richiede importazione e autorizzazioni nel calendario scelto; nessun versamento viene registrato automaticamente. Il registro è locale e non è un servizio bancario.
-
-Regole della versione web in [docs/SPECIFICA-WEB.md](docs/SPECIFICA-WEB.md). La versione nativa eventualmente presente nella cartella superiore non è parte di questo repository.
+Le regole di funzionamento sono raccolte in [docs/SPECIFICA-WEB.md](docs/SPECIFICA-WEB.md); le scelte tecniche e le verifiche sono descritte nei documenti della cartella `docs/`.
 
 Nessuna licenza di riutilizzo è stata ancora scelta: la visibilità pubblica del codice non equivale a una licenza open source.
