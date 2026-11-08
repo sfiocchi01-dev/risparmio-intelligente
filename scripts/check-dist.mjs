@@ -1,7 +1,7 @@
 import {readdir,readFile} from "node:fs/promises";
 import assert from "node:assert/strict";
 const expected = ["icons/icon-192.png","icons/icon-512.png","icons/icon-maskable.png","icons/pig.svg",
-  "index.html","manifest.webmanifest","src/app.js","src/core.js","src/storage.js","styles.css","sw.js"];
+  "index.html","manifest.webmanifest","src/app.js","src/core.js","src/storage.js","styles.css","sw.js","LICENSE"];
 const root = new URL("../dist/",import.meta.url);
 async function walk(prefix="") {
   const result = [];
@@ -23,4 +23,7 @@ assert.match(worker,/const CACHE = PREFIX \+ "[a-f0-9]{16}";/,"Cache release pri
 const manifest=JSON.parse(await readFile(new URL("manifest.webmanifest",root),"utf8"));
 assert.equal(manifest.start_url,"./");
 assert.equal(manifest.scope,"./");
-console.log("Build verificata: 11 asset, percorsi relativi, cache versionata e nessun file estraneo.");
+const license=await readFile(new URL("LICENSE",root),"utf8");
+assert.match(license,/GNU GENERAL PUBLIC LICENSE/);
+assert.match(license,/Version 3, 29 June 2007/);
+console.log("Build verificata: "+expected.length+" asset, licenza GPLv3, percorsi relativi, cache versionata e nessun file estraneo.");

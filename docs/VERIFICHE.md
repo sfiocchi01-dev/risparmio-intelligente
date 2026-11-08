@@ -46,6 +46,12 @@ Repository reso pubblico e sito pubblicato su https://sfiocchi01-dev.github.io/r
 - Solo dati sintetici nel database dei contesti di test, poi chiusi; nessun dato utente caricato sul server.
 - Questo non è un collaudo Safari/iPhone fisico o un aggiornamento tra release di produzione.
 
+## Licenza GPLv3
+
+Su scelta esplicita del proprietario è stata applicata GPLv3, versione 3 soltanto (`GPL-3.0-only`), non AGPL. LICENSE coincide byte per byte con il testo ufficiale scaricato da GNU. README e metadati aggiornati; avvisi e collegamenti a licenza/sorgente nell'app. La build ora contiene 12 asset, inclusa LICENSE.
+
+Rieseguiti 18 test unitari, build e controllo asset; suite Chromium mobile/desktop passata e testo della licenza recuperabile anche offline dalla cache dell'app. Nessuna modifica allo schema dei dati o alle regole monetarie.
+
 ## Non ancora verificate
 
 - Safari/WebKit su iPhone reale, Home Screen e installazione PWA.

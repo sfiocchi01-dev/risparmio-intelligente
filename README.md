@@ -133,4 +133,12 @@ Il sito è pubblicato e i flussi Chromium mobile/desktop sono stati verificati a
 
 Le regole di funzionamento sono raccolte in [docs/SPECIFICA-WEB.md](docs/SPECIFICA-WEB.md); le scelte tecniche e le verifiche sono descritte nei documenti della cartella `docs/`.
 
-Nessuna licenza di riutilizzo è stata ancora scelta: la visibilità pubblica del codice non equivale a una licenza open source.
+## Licenza
+
+Copyright © 2026 sfiocchi01-dev.
+
+Questo progetto è distribuito con licenza **GNU General Public License, versione 3 soltanto** (`GPL-3.0-only`). Il testo completo è in [LICENSE](LICENSE).
+
+Puoi usare, studiare, modificare e ridistribuire il software, anche commercialmente, rispettando la GPLv3. Quando distribuisci versioni modificate, devi mantenere la licenza e gli avvisi previsti e fornire il sorgente corrispondente ai destinatari secondo le condizioni della licenza. Le modifiche mantenute esclusivamente per uso privato non devono essere pubblicate. È GPLv3, non AGPL: il solo uso tramite rete non introduce l'obbligo aggiuntivo previsto dall'AGPL.
+
+Il software è fornito **senza garanzia**, nei limiti consentiti dalla legge. La licenza del progetto non si applica ai dati personali e ai backup degli utenti, che non fanno parte del software distribuito.

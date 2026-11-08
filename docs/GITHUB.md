@@ -21,7 +21,7 @@ La combinazione corrente è repository pubblico e GitHub Pages su GitHub Free. I
 2. Sono esclusi: dist generata, dipendenze/cache, file di backup, esportazioni calendario, credenziali, schermate dei test, istruzioni locali AGENTS e snapshot STATO-PROGETTO con percorsi personali.
 3. Non aggiungere forzatamente questi file. Un backup con nome arbitrario potrebbe non essere intercettato dal gitignore: non copiarlo nella cartella del repository.
 4. Scegliere nome ed email per i commit. Per non pubblicare l'email personale, usare esattamente l'indirizzo noreply mostrato in GitHub → Settings → Emails. Non inventare l'indirizzo.
-5. Nessuna licenza scelta automaticamente. Prima di dichiarare il progetto open source scegliere una licenza esplicita con il proprietario.
+5. Licenza scelta esplicitamente dal proprietario: GPLv3, versione 3 soltanto (`GPL-3.0-only`), testo ufficiale in LICENSE. Non sostituirla con AGPL o altre licenze senza consenso. I dati/backup degli utenti sono esclusi dall'ambito del software licenziato.
 
 Configurazione locale, da completare con i propri dati verificati:
 

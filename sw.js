@@ -1,6 +1,6 @@
 const PREFIX = "risparmio:" + new URL(self.registration.scope).pathname + ":";
-const CACHE = PREFIX + "dev-3";
-const FILES = ["./", "./index.html", "./styles.css", "./manifest.webmanifest",
+const CACHE = PREFIX + "dev-4";
+const FILES = ["./", "./index.html", "./styles.css", "./manifest.webmanifest", "./LICENSE",
   "./src/app.js", "./src/core.js", "./src/storage.js", "./icons/pig.svg",
   "./icons/icon-192.png", "./icons/icon-512.png", "./icons/icon-maskable.png"];
 self.addEventListener("install", event => {

@@ -1,6 +1,6 @@
 import {mkdir,copyFile,readFile,writeFile} from "node:fs/promises";
 import {createHash} from "node:crypto";
-const files = ["index.html","styles.css","manifest.webmanifest","sw.js",
+const files = ["index.html","styles.css","manifest.webmanifest","sw.js","LICENSE",
   "src/app.js","src/core.js","src/storage.js","icons/pig.svg",
   "icons/icon-192.png","icons/icon-512.png","icons/icon-maskable.png"];
 const hash = createHash("sha256");
