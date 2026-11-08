@@ -2,7 +2,7 @@
 
 ## Scelte
 
-HTML/CSS e JavaScript a moduli, senza framework, pacchetti runtime, CDN o font remoti. Deploy statico adatto a GitHub Pages; Node serve solo per anteprima, build e test. Nessun servizio esterno o account creato.
+HTML/CSS e JavaScript a moduli, senza framework, pacchetti runtime, CDN o font remoti. Deploy statico adatto a GitHub Pages; Node serve solo per anteprima, build e test. Sito statico pubblicato su GitHub Pages da repository pubblico; nessun backend applicativo o account utente dell'app. La pubblicazione è stata autorizzata successivamente alla prima iterazione locale.
 
 ## Separazione
 

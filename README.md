@@ -46,7 +46,13 @@ I salvadanai completi non ricevono altro denaro. L’eventuale eccedenza resta n
 
 La web app si apre dal browser e, una volta ospitata in HTTPS, può essere aggiunta alla schermata Home dell’iPhone da Safari. Non richiede un account e non collega conti bancari. Il registro parte vuoto, pronto per i tuoi obiettivi.
 
-**Il codice è nel repository privato; il sito non è ancora pubblicato.** Per provarla sul Mac segui le istruzioni qui sotto. Per la futura pubblicazione consulta [docs/GITHUB.md](docs/GITHUB.md).
+### Apri l’app
+
+**[Usa Risparmio intelligente](https://sfiocchi01-dev.github.io/risparmio-intelligente/)**
+
+Su iPhone apri il link in **Safari → Condividi → Aggiungi alla schermata Home**. Il codice è disponibile nel repository pubblico; i risparmi rimangono nel database del tuo dispositivo, non su GitHub.
+
+Per l’anteprima sul Mac segui le istruzioni qui sotto. Per gestire nuove pubblicazioni consulta [docs/GITHUB.md](docs/GITHUB.md).
 
 ## Avvio sul Mac
 
@@ -59,7 +65,7 @@ npm start
 
 Apri **http://localhost:4173/** nel browser. Non aprire `index.html` con doppio clic: moduli, database e service worker richiedono un server.
 
-Il server di anteprima ascolta solo sul Mac. `localhost` sull'iPhone identifica l'iPhone, non il Mac. L'installazione reale su iPhone richiederà un indirizzo HTTPS, che predisporremo su GitHub Pages; non è ancora pubblicato.
+Il server di anteprima ascolta solo sul Mac. `localhost` sull'iPhone identifica l'iPhone, non il Mac: sul telefono usa [l’indirizzo HTTPS pubblicato](https://sfiocchi01-dev.github.io/risparmio-intelligente/).
 
 ## Aggiornamenti
 
@@ -110,7 +116,7 @@ I push e le pull request eseguono test e build; **non pubblicano automaticamente
 
 Il repository deve contenere questa web app, non la cartella superiore dell'eventuale progetto nativo. Backup, documenti locali e schermate dei test sono esclusi dal versionamento.
 
-Prima della pubblicazione: test Safari/iPhone (installazione, chiusura/riapertura, offline, selezione file backup, esportazione e aggiornamento), verifica accessibilità e pagina informativa. Su uno stesso dominio GitHub Pages, altri siti dello stesso proprietario condividono l'origine: pubblicare solo codice fidato.
+Il sito è pubblicato e i flussi Chromium mobile/desktop sono stati verificati anche sull’indirizzo reale. Prima di usarlo con risparmi importanti o diffonderlo ampiamente, completare i test Safari/iPhone (installazione, chiusura/riapertura, offline, selezione file backup, esportazione e aggiornamento), verifica accessibilità e informazioni privacy/supporto. Su uno stesso dominio GitHub Pages, altri siti dello stesso proprietario condividono l'origine: pubblicare solo codice fidato.
 
 ## Struttura
 

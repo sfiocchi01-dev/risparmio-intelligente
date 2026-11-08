@@ -2,13 +2,18 @@
 
 ## Stato attuale
 
-Repository locale nella sola cartella web. Codice caricato sul repository remoto privato `sfiocchi01-dev/risparmio-intelligente`, ramo `main`. Primo commit `97e4748`; il workflow GitHub «Test e build» è passato (18 test unitari, build e controllo asset). Nessun sito pubblicato: il deploy Pages rimane manuale.
+Repository locale nella sola cartella web, remoto `sfiocchi01-dev/risparmio-intelligente`, ramo `main`. Creato inizialmente privato, è stato reso **pubblico su successiva autorizzazione esplicita dell'utente**, insieme alla prima pubblicazione del sito.
 
-Nome concordato: **risparmio-intelligente**, proprietario **sfiocchi01-dev**. L'utente ha richiesto un repository **privato**: non creare repository pubblici né cambiare visibilità senza un nuovo consenso.
+- Codice: https://github.com/sfiocchi01-dev/risparmio-intelligente
+- App: https://sfiocchi01-dev.github.io/risparmio-intelligente/
+- Prima pubblicazione: workflow Pages `42483134969`, build e deploy superati (18 test unitari, build e controllo asset).
+- Verificati otto asset HTTPS byte per byte rispetto alla build locale e i flussi Chromium mobile/desktop sul sito reale, anche offline e con backup. Safari/iPhone fisico resta da collaudare.
+
+Nome concordato: **risparmio-intelligente**, proprietario **sfiocchi01-dev**. Non cambiare nuovamente visibilità, dominio o modalità di pubblicazione senza consenso.
 
 Il remoto locale origin punta a `https://github.com/sfiocchi01-dev/risparmio-intelligente.git`; il repository è stato verificato online come privato, con proprietario e nome corretti, prima e dopo il primo push. L'identità autore usa il nome account e l'indirizzo noreply mostrato dal proprietario nelle impostazioni GitHub, senza pubblicare l'email personale.
 
-GitHub Free consente repository privati, ma GitHub Pages da repository privati richiede un piano compatibile, come GitHub Pro. Inoltre la visibilità privata del repository non rende automaticamente privato un eventuale sito Pages. Per ora non pubblicare il sito; valutare piano o hosting separato mantenendo privato il codice.
+La combinazione corrente è repository pubblico e GitHub Pages su GitHub Free. Il sito e il codice sono pubblicamente accessibili; i dati degli utenti restano locali. Nessun servizio Cloudflare è stato configurato.
 
 ## Prima del primo commit
 
@@ -31,7 +36,7 @@ git commit -m "Prima versione web di Risparmio intelligente"
 
 La procedura seguente è documentazione di riferimento: origin e il primo push sono già configurati.
 
-Su GitHub creare un repository **privato** vuoto con il nome concordato, verificando il proprietario e la visibilità prima di confermare. Non inizializzarlo con README, licenza o gitignore: i file sono già locali.
+Il repository è stato creato inizialmente privato dal proprietario e poi reso pubblico sul suo esplicito mandato. Non ricrearlo: origin e lo storico sono già presenti.
 
 Dopo aver verificato l'URL del repository:
 
@@ -49,9 +54,9 @@ L'autenticazione va gestita con gli strumenti GitHub o il gestore credenziali de
 - **Pubblica su GitHub Pages**: solo avvio manuale, solo ramo main; ripete test e controlli, carica esclusivamente dist/ e pubblica usando i permessi minimi Pages/OIDC. Non richiede token personale o secret configurato nel repository.
 - I test browser restano un controllo separato: non vengono dichiarati eseguiti dal semplice workflow unitario.
 
-## Prima pubblicazione, quando autorizzata
+## Pubblicazione delle nuove versioni
 
-Non eseguire questo passaggio per il solo caricamento del repository privato. Prima verificare il piano Pages e ottenere il consenso separato alla pubblicazione del sito; non rendere pubblico il repository come scorciatoia.
+Prima pubblicazione completata su autorizzazione dell'utente. I successivi push non aggiornano automaticamente il sito: quando una release è autorizzata, avviare manualmente il workflow Pages. La procedura resta:
 
 1. Repository → Settings → Pages → Build and deployment → Source: **GitHub Actions**.
 2. Actions → **Pubblica su GitHub Pages** → Run workflow, ramo main.

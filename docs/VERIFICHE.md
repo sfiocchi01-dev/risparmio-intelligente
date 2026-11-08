@@ -37,6 +37,15 @@ Playwright/Chromium, mobile 390×844 e desktop 1280×900, usando una fixture loc
 
 Il repository GitHub privato è stato creato e i controlli CI sono passati; il sito non è stato pubblicato. Le prove sopra restano locali e non attestano Safari/iPhone.
 
+## Pubblicazione GitHub Pages — eseguita su autorizzazione
+
+Repository reso pubblico e sito pubblicato su https://sfiocchi01-dev.github.io/risparmio-intelligente/ tramite workflow manuale `42483134969`, concluso con build e deploy success.
+
+- Otto asset remoti restituiscono HTTP 200 e corrispondono byte per byte alla build locale: HTML, CSS, tre moduli JavaScript, service worker, manifest e icona 192.
+- Suite del registro rieseguita sul sito HTTPS reale in contesti Chromium isolati, mobile 390×844 e desktop 1280×900: operazioni, persistenza, backup, conflitti, errore quota simulato, avvio e salvataggio offline passati.
+- Solo dati sintetici nel database dei contesti di test, poi chiusi; nessun dato utente caricato sul server.
+- Questo non è un collaudo Safari/iPhone fisico o un aggiornamento tra release di produzione.
+
 ## Non ancora verificate
 
 - Safari/WebKit su iPhone reale, Home Screen e installazione PWA.
@@ -44,7 +53,7 @@ Il repository GitHub privato è stato creato e i controlli CI sono passati; il s
 - Esportazione, selezione file e importazione Calendario su iOS.
 - Aggiornamento tra due release reali installate su iPhone.
 - Accessibilità completa con VoiceOver e tastiera, stress test storico 100.000 operazioni.
-- Dominio del sito e deploy pubblico. Nessuna pubblicazione del sito eseguita.
+- Aggiornamento tra due release del sito pubblico: per ora testato solo con la fixture locale.
 
 ## Riproducibilità
 
