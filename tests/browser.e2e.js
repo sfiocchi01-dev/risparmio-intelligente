@@ -1,0 +1,106 @@
+export default async function (page) {
+  const check = (condition, message) => { if (!condition) throw new Error(message); };
+  const steps = [];
+  const base = page.url().replace(/[^/]*$/, "");
+  const read = () => page.evaluate(async () => (await import(new URL('./src/storage.js', location.href))).load());
+  const click = name => page.getByRole('button', {name, exact:true}).click();
+  const fillAmount = value => page.getByLabel('Importo in euro', {exact:true}).fill(value);
+  const create = async (name,target) => {
+    await click('＋ Nuovo');
+    await page.getByLabel('Nome categoria').fill(name);
+    await page.getByLabel('Obiettivo in euro').fill(target);
+    await click('Crea salvadanaio');
+    await page.locator('dialog').waitFor({state:'hidden'});
+  };
+  const openGoal = name => page.getByRole('button', {name:new RegExp('^'+name+',')}).click();
+  const close = () => page.getByRole('button', {name:'Chiudi',exact:true}).click();
+  await page.getByRole('heading',{name:'I tuoi salvadanai'}).waitFor();
+  check((await read()).goals.length === 0, 'Usare un contesto browser di test vuoto');
+  await create('Auto','2000'); await create('Vacanze','1000');
+  await click('＋ Aggiungi risparmi'); await fillAmount('300'); await click('Conferma versamento');
+  await page.locator('dialog').waitFor({state:'hidden'});
+  let s=await read(); check(s.goals[0].balance===20000 && s.goals[1].balance===10000,'Ripartizione');
+  steps.push('creazione e ripartizione proporzionale');
+  await openGoal('Auto'); await click('Preleva'); await fillAmount('50'); await click('Conferma prelievo');
+  await page.locator('dialog').waitFor({state:'hidden'});
+  await openGoal('Auto'); await click('Trasferisci'); await fillAmount('50'); await click('Conferma trasferimento');
+  await page.locator('dialog').waitFor({state:'hidden'});
+  s=await read(); check(s.goals[0].balance===10000 && s.goals[1].balance===15000,'Prelievo/trasferimento');
+  await openGoal('Auto'); await click('★ Rendi prioritario');
+  await page.locator('dialog').waitFor({state:'hidden'});
+  await click('＋ Aggiungi risparmi'); await fillAmount('100'); await click('Conferma versamento');
+  await page.locator('dialog').waitFor({state:'hidden'});
+  s=await read(); check(s.goals[0].balance===20000 && s.goals[1].balance===15000,'Priorità');
+  steps.push('prelievo, trasferimento e priorità');
+  await openGoal('Vacanze'); await click('Modifica categoria');
+  await page.getByLabel('Obiettivo in euro').fill('100'); await click('Salva modifiche');
+  await page.locator('dialog').waitFor({state:'hidden'});
+  s=await read();check(s.free===5000,'Riduzione obiettivo');
+  await openGoal('Auto'); await click('Elimina categoria'); await click('Annulla');
+  s=await read();check(s.goals.length===2,'Annullamento');
+  await openGoal('Auto'); await click('Elimina categoria'); await click('Elimina e redistribuisci');
+  await page.locator('dialog').waitFor({state:'hidden'});
+  s=await read();check(s.goals.length===1 && s.free===25000 && s.priority===null,'Eliminazione redistribuita');
+  await click('Preleva dal saldo libero'); await fillAmount('251'); await click('Conferma prelievo');
+  await page.locator('#form-error').filter({hasText:'supera'}).waitFor();
+  check((await read()).free===25000,'Importo eccessivo non deve modificare');
+  await fillAmount('50'); await click('Conferma prelievo');
+  await page.locator('dialog').waitFor({state:'hidden'});
+  s=await read();check(s.free===20000,'Prelievo saldo libero');
+  steps.push('modifica, annullamento, eliminazione e saldo libero');
+  const saved=JSON.stringify(s);
+  await page.reload(); await page.getByRole('heading',{name:'I tuoi salvadanai'}).waitFor();
+  check(JSON.stringify(await read())===saved,'Dati dopo riapertura');
+  check((await page.locator('time').first().getAttribute('datetime'))===s.movements[0].date,'Timestamp visibile');
+  await click('Impostazioni e backup');
+  const downloadPromise=page.waitForEvent('download'); await click('↓ Esporta backup');
+  const download=await downloadPromise;
+  const stream=await download.createReadStream();
+  let exported='';
+  for await (const chunk of stream) exported+=chunk.toString('utf8');
+  check(JSON.stringify(JSON.parse(exported).state)===saved,'Backup esportato');
+  await close();
+  await openGoal('Vacanze'); await click('Elimina categoria'); await click('Elimina e preleva tutto');
+  await page.locator('dialog').waitFor({state:'hidden'});
+  check((await read()).goals.length===0,'Eliminazione con prelievo');
+  await click('Impostazioni e backup');
+  await page.getByLabel('Ripristina da un backup JSON').setInputFiles({name:'invalid.json',mimeType:'application/json',buffer:Buffer.from('{}')});
+  await page.locator('#form-error').filter({hasText:'non è un backup'}).waitFor();
+  check((await read()).goals.length===0,'Importazione malformata non deve mutare');
+  await page.getByLabel('Ripristina da un backup JSON').setInputFiles({name:'backup.json',mimeType:'application/json',buffer:Buffer.from(exported)});
+  await click('Sostituisci e ripristina');await page.locator('dialog').waitFor({state:'hidden'});
+  s=await read();check(s.goals.length===1 && s.free===20000 && s.movements.length===JSON.parse(saved).movements.length,'Ripristino');
+  steps.push('riapertura, timestamp, esportazione e importazione validata');
+  const conflict=await page.evaluate(async()=>{
+    const {load,save}=await import(new URL('./src/storage.js',location.href));
+    const first=await load(), second=structuredClone(first); first.revision++;
+    await save(first,second.revision);
+    try {second.revision++;await save(second,second.revision-1);return false;}catch{return true;}
+  });
+  check(conflict,'Protezione da scritture concorrenti');
+  const failedSaveIsAtomic=await page.evaluate(async()=>{
+    const {load,save}=await import(new URL('./src/storage.js',location.href));
+    const before=await load(), candidate=structuredClone(before); candidate.revision++;
+    const original=IDBObjectStore.prototype.put;
+    IDBObjectStore.prototype.put=function(){throw new DOMException('Spazio esaurito simulato','QuotaExceededError');};
+    let rejected=false;
+    try{await save(candidate,before.revision);}catch{rejected=true;}finally{IDBObjectStore.prototype.put=original;}
+    return rejected && JSON.stringify(await load())===JSON.stringify(before);
+  });
+  check(failedSaveIsAtomic,'Un salvataggio fallito non deve applicare modifiche');
+  steps.push('salvataggio fallito annullato atomicamente');
+  await page.reload();await page.getByRole('heading',{name:'I tuoi salvadanai'}).waitFor();
+  await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
+  await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
+  check(await page.evaluate(()=>!!navigator.serviceWorker.controller),'Service worker attivo');
+  try {
+    await page.context().setOffline(true);
+    await page.goto(base);await page.getByRole('heading',{name:'I tuoi salvadanai'}).waitFor();
+    await create('Salute offline','500');
+    await page.reload();await page.getByRole('heading',{name:'I tuoi salvadanai'}).waitFor();
+    check((await read()).goals.some(g=>g.name==='Salute offline'),'Salvataggio offline');
+    steps.push('conflitto concorrente rifiutato, avvio e salvataggio offline');
+  } finally {await page.context().setOffline(false);}
+  check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Nessun overflow orizzontale mobile');
+  return {passed:steps, viewport:page.viewportSize(), url:page.url()};
+}

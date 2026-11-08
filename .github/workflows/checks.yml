@@ -1,0 +1,26 @@
+name: Test e build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+      - name: Test del dominio
+        run: npm test
+      - name: Build statica
+        run: npm run build
+      - name: Controlla gli asset pubblicabili
+        run: npm run check:dist

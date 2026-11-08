@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f6f5fb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Risparmio">
+  <meta name="description" content="Dai uno scopo ai tuoi risparmi. Un registro personale, offline e senza collegamenti bancari.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <title>Risparmio intelligente</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="icon" href="./icons/pig.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./"><img src="./icons/pig.svg" alt="" width="38" height="38"><span>Risparmio<span class="brand-light"> intelligente</span></span></a>
+    <button class="icon-button" data-action="settings" aria-label="Impostazioni e backup">☰</button>
+  </header>
+  <main id="app"><p class="loading" role="status">Apro il tuo registro…</p></main>
+  <footer class="dock"><button class="primary" data-action="deposit">＋ Aggiungi risparmi</button></footer>
+  <dialog id="modal" aria-labelledby="dialog-title"></dialog>
+  <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+  <noscript>Per usare questo registro devi abilitare JavaScript. I dati vengono salvati soltanto su questo dispositivo.</noscript>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
