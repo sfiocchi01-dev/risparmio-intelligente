@@ -23,6 +23,20 @@ Playwright/Chromium, contesti isolati con soli dati sintetici:
 - Percorso simulato GitHub Pages `/risparmio-intelligente/`, anche usando gli asset prodotti in dist.
 - Screenshot mobile ispezionato con dati fittizi; correzione grafica dell'origine del livello di riempimento.
 
+## Banner aggiornamenti — verifica aggiuntiva
+
+Playwright/Chromium, mobile 390×844 e desktop 1280×900, usando una fixture locale con vere installazioni/attivazioni di tre service worker di release differenti:
+- Primo caricamento senza falso avviso.
+- Banner visibile oltre i 6 secondi del toast, nessun overflow.
+- «Più tardi» nasconde l'avviso senza modificare il registro; riappare al reload con worker ancora in attesa.
+- «Aggiorna ora» attiva la release e ricarica, preservando saldi e storico.
+- Nessuna ricarica forzata di una seconda scheda e suo modulo non confermato conservato.
+- Transazione IndexedDB tenuta aperta dalla fixture: aggiornamento disabilitato fino al commit.
+- Aggiornamento ancora accessibile dalle impostazioni dopo il rinvio; nuova release attivata con nuovo saldo conservato.
+- Screenshot mobile del banner controllato. Fixture `tests/update-server.mjs`, scenario `tests/updates.e2e.js`; esclusi da dist.
+
+Il repository GitHub privato è stato creato e i controlli CI sono passati; il sito non è stato pubblicato. Le prove sopra restano locali e non attestano Safari/iPhone.
+
 ## Non ancora verificate
 
 - Safari/WebKit su iPhone reale, Home Screen e installazione PWA.
@@ -30,7 +44,7 @@ Playwright/Chromium, contesti isolati con soli dati sintetici:
 - Esportazione, selezione file e importazione Calendario su iOS.
 - Aggiornamento tra due release reali installate su iPhone.
 - Accessibilità completa con VoiceOver e tastiera, stress test storico 100.000 operazioni.
-- Dominio GitHub reale, configurazione repository e deploy. Nessuna pubblicazione eseguita.
+- Dominio del sito e deploy pubblico. Nessuna pubblicazione del sito eseguita.
 
 ## Riproducibilità
 

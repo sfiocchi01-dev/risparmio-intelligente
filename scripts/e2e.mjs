@@ -1,4 +1,6 @@
 import run from "../tests/browser.e2e.js";
+import runUpdates from "../tests/updates.e2e.js";
+const updates = process.argv.includes("--updates");
 let playwright;
 try { playwright = await import("playwright"); }
 catch { console.error("Test browser opzionali: serve Playwright nell’ambiente di sviluppo. I test unitari non richiedono dipendenze."); process.exit(1); }
@@ -10,8 +12,11 @@ try {
     const context = await browser.newContext({viewport,acceptDownloads:true});
     try {
       const page = await context.newPage();
-      await page.goto(process.env.TEST_URL ?? "http://localhost:4173/");
-      console.log(await run(page));
+      if (updates) console.log(await runUpdates(page, process.env.TEST_URL ?? "http://localhost:4180/update-test/"));
+      else {
+        await page.goto(process.env.TEST_URL ?? "http://localhost:4173/");
+        console.log(await run(page));
+      }
     } finally {await context.close();}
   }
 } finally {await browser.close();}

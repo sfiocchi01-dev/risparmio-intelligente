@@ -61,6 +61,17 @@ Apri **http://localhost:4173/** nel browser. Non aprire `index.html` con doppio 
 
 Il server di anteprima ascolta solo sul Mac. `localhost` sull'iPhone identifica l'iPhone, non il Mac. L'installazione reale su iPhone richiederà un indirizzo HTTPS, che predisporremo su GitHub Pages; non è ancora pubblicato.
 
+## Aggiornamenti
+
+Quando il browser rileva una nuova versione, compare un **banner persistente** con due scelte:
+
+- **Aggiorna ora**: attiva la nuova versione e ricarica l’app, conservando i risparmi già salvati.
+- **Più tardi**: nasconde il banner per la sessione corrente; l’aggiornamento resta accessibile da **Backup e impostazioni** e l’avviso torna alla riapertura se la versione è ancora in attesa.
+
+Il pulsante è disabilitato durante un salvataggio. Un aggiornamento avviato in una scheda non forza il riavvio delle altre schede con moduli aperti. La nuova versione può attivarsi automaticamente quando tutte le finestre precedenti vengono chiuse. Non serve reinstallare l’icona sulla Home.
+
+Serve Internet per rilevare e scaricare le nuove versioni; offline rimane utilizzabile quella già disponibile. Il banner non è una notifica push e non richiede l’aggiornamento immediato.
+
 ## Dati e backup
 
 Dati locali, non inviati a GitHub o a un server applicativo. Nessun account, analytics o collegamento bancario. Il database è associato all'origine e al percorso dell'app: cambiare dominio/percorso/browser può far apparire un registro vuoto. Non significa che i dati siano stati trasferiti o cancellati.
@@ -80,6 +91,8 @@ npm run check:dist
 18 test unitari Node passati, inclusi i cinque esempi approvati e 1.000 scenari generati. Nessuna dipendenza esterna per eseguirli.
 
 Test browser Playwright eseguiti tramite gli strumenti dell'ambiente: flussi completi mobile 390×844 e desktop 1280×900, persistenza, backup reale scaricato/ripristinato, file malformato, operazione eccessiva, conflitto tra revisioni, errore di scrittura simulato e avvio/salvataggio offline. Verificati anche sotto `/risparmio-intelligente/`, come un repository GitHub Pages.
+
+Test aggiuntivi con tre release simulate verificano banner persistente, rinvio, attivazione, dati conservati e mancata interruzione di salvataggi/schede. Per riprodurli con Playwright disponibile: avviare `node tests/update-server.mjs` e, in un altro terminale, `npm run test:updates`. La fixture ascolta soltanto su localhost e non è inclusa nella build pubblicabile.
 
 Il callback riproducibile è in `tests/browser.e2e.js`; `npm run test:browser` usa un'installazione **opzionale** di Playwright già disponibile nell'ambiente. Non è inclusa/installata dal progetto. Variabili: `TEST_URL` e `BROWSER=chromium|webkit|firefox`. Non attestiamo Safari o Firefox: finora i flussi sono stati eseguiti con Chromium, non su iPhone reale.
 

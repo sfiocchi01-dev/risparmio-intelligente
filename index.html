@@ -19,6 +19,16 @@
     <a class="brand" href="./"><img src="./icons/pig.svg" alt="" width="38" height="38"><span>Risparmio<span class="brand-light"> intelligente</span></span></a>
     <button class="icon-button" data-action="settings" aria-label="Impostazioni e backup">☰</button>
   </header>
+  <section id="update-banner" class="update-banner" aria-labelledby="update-title" hidden>
+    <div role="status" aria-live="polite">
+      <strong id="update-title">È disponibile una nuova versione</strong>
+      <p id="update-description">Aggiorna quando preferisci. I risparmi già salvati rimangono sul dispositivo.</p>
+    </div>
+    <div class="update-actions">
+      <button type="button" class="primary" data-action="update">Aggiorna ora</button>
+      <button type="button" class="secondary" data-action="dismissUpdate">Più tardi</button>
+    </div>
+  </section>
   <main id="app"><p class="loading" role="status">Apro il tuo registro…</p></main>
   <footer class="dock"><button class="primary" data-action="deposit">＋ Aggiungi risparmi</button></footer>
   <dialog id="modal" aria-labelledby="dialog-title"></dialog>

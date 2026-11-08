@@ -4,9 +4,41 @@ import {load, save} from "./storage.js";
 const root = document.querySelector("#app");
 const modal = document.querySelector("#modal");
 const notice = document.querySelector("#notice");
+const updateBanner = document.querySelector("#update-banner");
 const colors = ["#9580e9", "#46b8b0", "#e8a65c", "#dd8ba7", "#7cace2"];
 let state = emptyState(), ready = false, busy = false, historyLimit = 30, imported = null, noticeTimer;
 let registration, waitingWorker, reloadOnUpdate = false;
+let updateDismissed = false, updating = false, updateTimeout, lastUpdateCheck = 0;
+function renderUpdateBanner() {
+  updateBanner.hidden = !waitingWorker || updateDismissed;
+  document.querySelector("#update-title").textContent = updating
+    ? "Aggiornamento in corso…" : "È disponibile una nuova versione";
+  document.querySelector("#update-description").textContent = busy
+    ? "Salvataggio in corso. Potrai aggiornare al termine dell’operazione."
+    : "Aggiorna quando preferisci. I risparmi già salvati rimangono sul dispositivo.";
+  for (const control of document.querySelectorAll('[data-action="update"], [data-action="dismissUpdate"]')) {
+    control.disabled = busy || updating || !waitingWorker;
+  }
+}
+function setBusy(value) { busy = value; renderUpdateBanner(); }
+function announceUpdate() {
+  const next = registration?.waiting;
+  if (next && next !== waitingWorker) updateDismissed = false;
+  waitingWorker = next;
+  renderUpdateBanner();
+}
+function requestUpdate() {
+  if (!waitingWorker || busy || updating) return;
+  updating = true; reloadOnUpdate = true; renderUpdateBanner();
+  modal.close();
+  const failed = () => {
+    updating = false; reloadOnUpdate = false; announceUpdate();
+    toast("L’aggiornamento non è stato attivato. Puoi riprovare; i dati salvati non sono stati modificati.");
+  };
+  updateTimeout = setTimeout(failed, 15_000);
+  try { waitingWorker.postMessage({type:"ACTIVATE"}); }
+  catch { clearTimeout(updateTimeout); failed(); }
+}
 const channel = typeof BroadcastChannel !== "undefined" ? new BroadcastChannel("risparmio-register:" + new URL("../", import.meta.url).pathname) : null;
 const esc = x => String(x).replace(/[&<>"']/g, c => ({"&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"}[c]));
 const dateFormat = new Intl.DateTimeFormat("it-IT", {dateStyle:"long", timeStyle:"short"});
@@ -56,7 +88,7 @@ function deleteDialog(id) {
   openDialog(`Eliminare ${g.name}?`, `<p>Il saldo è <strong>${euro(g.balance)}</strong>. Scegli cosa farne:</p><div class="form-actions">${button("deleteRedistribute","Elimina e redistribuisci","danger",id)}<p class="footnote">Il totale non cambia. Le altre categorie si riempiono proporzionalmente senza priorità; l’eccedenza resta da assegnare.</p>${button("deleteWithdraw","Elimina e preleva tutto","danger",id)}<p class="footnote">Il totale diminuisce di ${euro(g.balance)}. I movimenti della categoria restano nello storico.</p>${button("close","Annulla")}</div><p class="error" role="alert" id="form-error"></p>`);
 }
 function settings() {
-  openDialog("Il tuo registro, al sicuro", `<p class="install-note"><strong>Installala su iPhone</strong><br>Apri il sito in Safari → Condividi → Aggiungi alla schermata Home. Nessuna iscrizione o scadenza settimanale.</p><h3>Backup</h3><p class="footnote">I risparmi sono nel database di questo browser, non su GitHub. Cancellare i dati del sito può eliminarli. Il backup contiene dati personali in chiaro: conservalo in un luogo sicuro.</p>${button("export","↓ Esporta backup","primary")}<label for="backup-file">Ripristina da un backup JSON</label><input id="backup-file" type="file" accept=".json,application/json"><p class="footnote">Prima vedrai un riepilogo. Il ripristino sostituisce il registro attuale, non unisce i dati.</p><hr class="separator"><h3>Promemoria mensile</h3><p class="footnote">Questa versione non invia notifiche in background. Puoi aggiungere un evento ricorrente al tuo calendario, senza registrare versamenti automatici.</p><form data-form="calendar"><label for="day">Giorno del mese</label><input id="day" name="day" type="number" min="1" max="31" required value="1"><div class="form-actions"><button class="secondary" type="submit">Esporta promemoria calendario</button></div></form><hr class="separator"><h3>Spazio e modalità offline</h3><p class="footnote">Il primo accesso richiede Internet. L’app diventa disponibile offline quando i file sono stati memorizzati. Il sistema può comunque rimuovere dati locali: il backup resta importante.</p>${button("persist","Richiedi conservazione dei dati")}${waitingWorker ? `<div class="update">${button("update","Installa aggiornamento disponibile","primary")}</div>` : ""}<p class="error" role="alert" id="form-error"></p><p class="footnote">Nessun account, analytics, collegamento bancario o sincronizzazione cloud. Versione web 0.1.0.</p>`);
+  openDialog("Il tuo registro, al sicuro", `<p class="install-note"><strong>Installala su iPhone</strong><br>Apri il sito in Safari → Condividi → Aggiungi alla schermata Home. Nessuna iscrizione o scadenza settimanale.</p><h3>Backup</h3><p class="footnote">I risparmi sono nel database di questo browser, non su GitHub. Cancellare i dati del sito può eliminarli. Il backup contiene dati personali in chiaro: conservalo in un luogo sicuro.</p>${button("export","↓ Esporta backup","primary")}<label for="backup-file">Ripristina da un backup JSON</label><input id="backup-file" type="file" accept=".json,application/json"><p class="footnote">Prima vedrai un riepilogo. Il ripristino sostituisce il registro attuale, non unisce i dati.</p><hr class="separator"><h3>Promemoria mensile</h3><p class="footnote">Questa versione non invia notifiche in background. Puoi aggiungere un evento ricorrente al tuo calendario, senza registrare versamenti automatici.</p><form data-form="calendar"><label for="day">Giorno del mese</label><input id="day" name="day" type="number" min="1" max="31" required value="1"><div class="form-actions"><button class="secondary" type="submit">Esporta promemoria calendario</button></div></form><hr class="separator"><h3>Spazio e modalità offline</h3><p class="footnote">Il primo accesso richiede Internet. L’app diventa disponibile offline quando i file sono stati memorizzati. Il sistema può comunque rimuovere dati locali: il backup resta importante.</p>${button("persist","Richiedi conservazione dei dati")}${waitingWorker ? `<div class="update">${button("update","Installa aggiornamento disponibile","primary")}</div>` : ""}<p class="error" role="alert" id="form-error"></p><p class="footnote">Nessun account, analytics, collegamento bancario o sincronizzazione cloud. Versione web 0.1.1.</p>`);
 }
 function download(content, name, type) {
   const url = URL.createObjectURL(new Blob([content], {type}));
@@ -66,7 +98,7 @@ function download(content, name, type) {
 function exportBackup() { download(backup(state), `risparmio-${new Date().toISOString().replace(/[:.]/g,"-")}.backup.json`, "application/json"); }
 async function commit(command) {
   if (busy) return;
-  busy = true;
+  setBusy(true);
   const submit = modal.querySelector('[type="submit"]'); if (submit) submit.disabled = true;
   try {
     const next = apply(state,command);
@@ -75,7 +107,7 @@ async function commit(command) {
   } catch(error) {
     const field = modal.querySelector("#form-error");
     if (field) field.textContent = error.message; else toast(error.message);
-  } finally { busy = false; if (submit) submit.disabled = false; }
+  } finally { setBusy(false); if (submit) submit.disabled = false; }
 }
 async function refresh() {
   try { state = await load(); ready = true; render(); }
@@ -92,18 +124,18 @@ function formAmount(data, name="amount") {
 document.addEventListener("submit", async event => {
   const form = event.target.closest("form[data-form]"); if (!form) return;
   event.preventDefault();
-  if (busy) return;
+  if (busy || updating) return;
   const data = new FormData(form), type = form.dataset.form;
   try {
     if (type === "calendar") { exportCalendar(Number(data.get("day"))); return; }
     if (type === "restore") {
       if (!imported) throw new Error("Seleziona nuovamente il backup.");
-      busy = true;
+      setBusy(true);
       try {
         const next = structuredClone(imported); next.revision = state.revision+1; validate(next);
         await save(next,state.revision);
         state = next; imported = null; modal.close(); render(); channel?.postMessage("changed"); toast("Backup ripristinato");
-      } finally { busy = false; }
+      } finally { setBusy(false); }
       return;
     }
     const command = {type,id:form.dataset.id};
@@ -120,8 +152,8 @@ document.addEventListener("submit", async event => {
 document.addEventListener("click", async event => {
   const target = event.target.closest("button[data-action]"); if (!target) return;
   const {action,id} = target.dataset;
-  if (action === "close") { if (!busy) modal.close(); return; }
-  if (busy) return;
+  if (action === "close") { if (!busy && !updating) modal.close(); return; }
+  if (busy || updating) return;
   if (action === "reload") { await refresh(); return; }
   if (!ready) { toast("Attendi l’apertura del database locale."); return; }
   switch(action) {
@@ -143,7 +175,8 @@ document.addEventListener("click", async event => {
       } catch { toast("Richiesta non disponibile in questo browser. Usa il backup esportabile."); }
       break;
     }
-    case "update": if (waitingWorker) { reloadOnUpdate = true; modal.close(); waitingWorker.postMessage({type:"ACTIVATE"}); } break;
+    case "update": requestUpdate(); break;
+    case "dismissUpdate": updateDismissed = true; renderUpdateBanner(); break;
   }
 });
 document.addEventListener("change", async event => {
@@ -178,17 +211,27 @@ await refresh();
 if ("serviceWorker" in navigator) {
   try {
     registration = await navigator.serviceWorker.register(new URL("../sw.js",import.meta.url));
-    const announce = () => {
-      waitingWorker = registration.waiting;
-      if (waitingWorker && navigator.serviceWorker.controller) toast("Nuova versione disponibile: installala da Backup e impostazioni.");
+    const observeWorker = worker => worker?.addEventListener("statechange", announceUpdate);
+    observeWorker(registration.installing);
+    announceUpdate();
+    registration.addEventListener("updatefound",()=> {
+      observeWorker(registration.installing);
+      announceUpdate();
+    });
+    const checkUpdate = () => {
+      if (document.visibilityState !== "visible" || !navigator.onLine || busy || updating || Date.now()-lastUpdateCheck < 60_000) return;
+      lastUpdateCheck = Date.now();
+      registration.update().catch(()=> {});
     };
-    announce();
-    registration.addEventListener("updatefound",()=>registration.installing?.addEventListener("statechange",announce));
+    document.addEventListener("visibilitychange", checkUpdate);
+    window.addEventListener("pageshow", checkUpdate);
     let reloading = false;
     navigator.serviceWorker.addEventListener("controllerchange",()=> {
       if (reloading) return;
+      clearTimeout(updateTimeout);
+      announceUpdate();
       if (reloadOnUpdate) { reloading = true; location.reload(); }
-      else toast("Versione offline pronta. Gli aggiornamenti si applicano al prossimo avvio, senza interrompere i moduli aperti.");
+      // Another tab may have activated the release: do not interrupt this tab's forms.
     });
   } catch { toast("Modalità offline non disponibile. I dati restano nel database locale: esporta un backup."); }
 }

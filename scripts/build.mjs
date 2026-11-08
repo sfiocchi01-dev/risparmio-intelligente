@@ -11,7 +11,7 @@ for (const file of files) {
   const destination = new URL("../dist/"+file,import.meta.url);
   await mkdir(new URL(".",destination),{recursive:true});
   if (file === "sw.js") {
-    const worker = (await readFile(source,"utf8")).replace('"dev-2"',JSON.stringify(version));
+    const worker = (await readFile(source,"utf8")).replace(/"dev-\d+"/,JSON.stringify(version));
     await writeFile(destination,worker);
   } else await copyFile(source,destination);
 }
