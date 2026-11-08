@@ -2,11 +2,11 @@
 
 ## Stato attuale
 
-Repository locale nella sola cartella web. Il proprietario ha comunicato di avere creato il repository remoto privato; il primo caricamento resta da completare. Nessun sito pubblicato da questa preparazione.
+Repository locale nella sola cartella web. Codice caricato sul repository remoto privato `sfiocchi01-dev/risparmio-intelligente`, ramo `main`. Primo commit `97e4748`; il workflow GitHub «Test e build» è passato (18 test unitari, build e controllo asset). Nessun sito pubblicato: il deploy Pages rimane manuale.
 
 Nome concordato: **risparmio-intelligente**, proprietario **sfiocchi01-dev**. L'utente ha richiesto un repository **privato**: non creare repository pubblici né cambiare visibilità senza un nuovo consenso.
 
-Il remoto locale origin punta a `https://github.com/sfiocchi01-dev/risparmio-intelligente.git`; questo non prova che il repository esista online o sia autenticato. L'identità autore usa il nome account e l'indirizzo noreply mostrato dal proprietario nelle impostazioni GitHub, senza pubblicare l'email personale.
+Il remoto locale origin punta a `https://github.com/sfiocchi01-dev/risparmio-intelligente.git`; il repository è stato verificato online come privato, con proprietario e nome corretti, prima e dopo il primo push. L'identità autore usa il nome account e l'indirizzo noreply mostrato dal proprietario nelle impostazioni GitHub, senza pubblicare l'email personale.
 
 GitHub Free consente repository privati, ma GitHub Pages da repository privati richiede un piano compatibile, come GitHub Pro. Inoltre la visibilità privata del repository non rende automaticamente privato un eventuale sito Pages. Per ora non pubblicare il sito; valutare piano o hosting separato mantenendo privato il codice.
 
@@ -27,7 +27,9 @@ git add .
 git commit -m "Prima versione web di Risparmio intelligente"
 ```
 
-## Creazione del remoto (passo successivo, non eseguito)
+## Creazione iniziale del remoto (completata)
+
+La procedura seguente è documentazione di riferimento: origin e il primo push sono già configurati.
 
 Su GitHub creare un repository **privato** vuoto con il nome concordato, verificando il proprietario e la visibilità prima di confermare. Non inizializzarlo con README, licenza o gitignore: i file sono già locali.
 
